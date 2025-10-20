@@ -51,7 +51,7 @@ regex_patterns = {
     'Level': r'Level:\s*(\d+)', # Captura um ou mais dígitos (\d+) após 'Level:'.
     'Vocation': r'Vocation:\s*(.+?)\s*\|', # Captura qualquer coisa (.+?) não-gananciosa até o '|'.
     # LOOKAHEAD (?=...): Captura o World, mas para ANTES de 'Auction Start:'.
-    'World': r'World:\s*(.*?)(?=Auction Start:)',
+    'World': r'World:\s*(\w+)',
     'Minimum Bid': r'Minimum Bid:\s*([\d,]+)', # Captura dígitos e vírgulas (preço).
     'Winning Bid': r'Winning Bid:\s*([\d,]+)',
     'Magic Level': r'(\d+)\s*Magic Level', # Captura os dígitos que aparecem antes de 'Magic Level'.
@@ -128,6 +128,7 @@ for page in range(START_PAGE, END_PAGE + 1):
         extracted_data = {}
         for key, pattern in regex_patterns.items():
             match = re.search(pattern, full_row_text) # Tenta encontrar o padrão RegEx na string.
+            # print(full_row_text)
             if match:
                 raw_value = match.group(1).strip() # Pega apenas o que está entre parênteses no RegEx.
                 extracted_data[key] = raw_value
@@ -145,6 +146,7 @@ for page in range(START_PAGE, END_PAGE + 1):
 
         # Cria uma lista de dados na ordem correta do CSV.
         data_list = [extracted_data[key] for key in KEYS_TO_EXTRACT]
+        # print(data_list)
         
         # Garante que apenas linhas com Level ou Minimum Bid válido sejam consideradas (ignora linhas vazias/header).
         if extracted_data['Level'] != 'N/A' or extracted_data['Minimum Bid'] != 'N/A':
